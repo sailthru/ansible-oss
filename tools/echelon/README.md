@@ -6,7 +6,7 @@ By default echelon looks for _echelon.yml_ file at the top of the playbook direc
 
 The configuration file consists of two sections.
 * hierarchy: a list of hierarchies and paths to resolve
-* backends
+* backends: list of backend data lookup plugins
 
 ```
 hierarchy:
