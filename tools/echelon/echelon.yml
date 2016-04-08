@@ -1,0 +1,9 @@
+---
+
+hierarchy:
+    - aws:
+        - aws/{{ env }}/{{ region }}
+
+backends:
+    - yml:
+        data_dir: group_vars/echelon/data
