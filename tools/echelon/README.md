@@ -48,6 +48,7 @@ Based on the sample configuration file above, our sample data will look like:
    db_user: ops
    schema: my_app
     ```
+
 #### Using Echelon
 ##### As an action_plugin
 Using Echelon as an action_plugin makes all the key/values in the hierarchy availalbe to the play.
@@ -79,6 +80,7 @@ ok: [localhost] => {
        "schema": "my_app"
     }
 ```
+
 ##### As a lookup
 Using Echlon as a lookup fetches a single key/value form the hierarchy
 Place _echelon.py_ and the backend _echelon_yml.py_ in to your _lookuo_plugins_ dir or point the Ansible ANSIBLE_LOOKUP_PLUGINS environment varaiable at it
