@@ -158,10 +158,10 @@ class Echelon(object):
                     for plugin in backend_plugins:
                         data_new = self.load_template(plugin.main(path))
                         if data_new == {}:
-                            pass
+                            continue
                         else:
-                            hierarchy[k].remove(path)
                             data = self.merge_dicts(data_new, data)
+                            break
                     hierarchies[k] = data
 
         return hierarchies
