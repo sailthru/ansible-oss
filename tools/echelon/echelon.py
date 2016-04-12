@@ -104,14 +104,6 @@ class Echelon(object):
                     result[k] = deepcopy(v)
         return result
 
-    def merge_lists(elf, a, b):
-        if not isinstance(b, list):
-            return b
-
-        result = a + b
-
-        return result
-
     def load_template(self, ds):
         try:
             loaded_yaml = self.base._templar.template(variable=ds, preserve_trailing_newlines=True, 
