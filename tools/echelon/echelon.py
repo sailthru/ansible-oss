@@ -1,5 +1,5 @@
-#!/usr/bin/python
-#
+#!/usr/bin/env python
+
 # Todo: 
 #  add ability to be used as a standalone module
 #  add ability to be used as a vars_plugin 
@@ -104,12 +104,12 @@ class Echelon(object):
                     result[k] = deepcopy(v)
         return result
 
-    def load_template(self, ds):
+    def template_loader(self, ds):
         try:
             loaded_yaml = self.base._templar.template(variable=ds, preserve_trailing_newlines=True, 
                                                     escape_backslashes=False, convert_data=False)
         except Exception as e:
-            raise AnsibleError("Unable process template from file (%s): %s " % (file_path, str(e)))
+            raise AnsibleError("Unable process template from file (%s): %s " % (ds, str(e)))
 
         return loaded_yaml
 
@@ -124,7 +124,7 @@ class Echelon(object):
 
         loader = DataLoader()
         ds = loader.load_from_file(conf_file)
-        conf_data=self.load_template(ds) 
+        conf_data=self.template_loader(ds) 
 
         hierarchies={}
         if not 'hierarchy' in conf_data:
@@ -134,7 +134,7 @@ class Echelon(object):
         backends={}
         if not 'backends' in conf_data:
             raise AnsibleError("No 'backends' found in echeclon config file")
-
+        print("TARASS")
         backend_plugins = []
         for backend in conf_data['backends']:
             for k in backend:
@@ -148,7 +148,8 @@ class Echelon(object):
                 data = {}
                 for path in hierarchy[k]:
                     for plugin in backend_plugins:
-                        data_new = self.load_template(plugin.main(path))
+                        full_path = "%s/%s" % (k,path)
+                        data_new = self.template_loader(plugin.main(full_path))
                         if data_new == {}:
                             continue
                         else:
@@ -159,7 +160,8 @@ class Echelon(object):
         return hierarchies
 
 def main():
-    pass
+    results = {}
+    return results
 
 if __name__ == '__main__':
     main()   
