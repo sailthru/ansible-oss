@@ -11,11 +11,11 @@ The configuration file consists of two sections.
 ```
 hierarchy:
   - aws:
-    - instance_data/{{ env }}_ec2
-    - instance_data/defaults
+    - "{{ env }}_ec2"
+    - "defaults"
   - app:
-    - app_data/{{ env }}_db
-    - app_data/defaults
+    - "{{ env }}_db"
+    - "defaults"
 backends:
   - yml:
       data_dir: group_vars/echelon/data
