@@ -105,12 +105,13 @@ class Echelon(object):
         return result
 
     def template_loader(self, ds):
+        loaded_yaml = {}
         try:
             loaded_yaml = self.base._templar.template(variable=ds, preserve_trailing_newlines=True, 
-                                                    escape_backslashes=False, convert_data=False)
+                            fail_on_undefined=False, escape_backslashes=False, convert_data=False)
         except Exception as e:
             raise AnsibleError("Unable process template from file (%s): %s " % (ds, str(e)))
-
+            # pass
         return loaded_yaml
 
     def backend_loader(self,backend=None, conf=None):
