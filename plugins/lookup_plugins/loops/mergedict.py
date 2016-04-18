@@ -87,7 +87,14 @@ class LookupModule(LookupBase):
             if k in result and isinstance(result[k], dict):
                     result[k] = self.dict_merge(result[k], v)
             else:
-                result[k] = deepcopy(v)
+                # result[k] = deepcopy(v)
+                if isinstance(v, list):
+                    if k in result and isinstance(result[k], list):
+                        result[k] = v + result[k]
+                    else:
+                        result[k] = deepcopy(v)
+                else:
+                    result[k] = deepcopy(v)
         return result
 
     def run(self, terms, variables, **kwargs):
