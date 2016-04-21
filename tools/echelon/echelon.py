@@ -1,4 +1,24 @@
 #!/usr/bin/env python
+#
+# (c) 2016, SailThru
+# Taras Lipatov <tlipatov@sailthru.com>
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
 
 # Todo: 
 #  add ability to be used as a standalone module
@@ -135,7 +155,7 @@ class Echelon(object):
         backends={}
         if not 'backends' in conf_data:
             raise AnsibleError("No 'backends' found in echeclon config file")
-        print("TARASS")
+
         backend_plugins = []
         for backend in conf_data['backends']:
             for k in backend:
