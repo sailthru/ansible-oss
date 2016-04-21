@@ -24,42 +24,42 @@ backends:
 #### Hierarchy structure
 Based on the sample configuration file above, our sample data will look like:
 ``` 
-group_vars/echelon/data/instance_data/prod_ec2.yml
+group_vars/echelon/data/aws/prod_ec2.yml
 
 ---
 ami_id: id-123456
 ```
 
 ``` 
-group_vars/echelon/data/instance_data/dev_ec2.yml
+group_vars/echelon/data/aws/dev_ec2.yml
 
 ---
 ami_id: id-789123
 ```
 
 ``` 
-group_vars/echelon/data/instance_data/defaults.yml
+group_vars/echelon/data/aws/defaults.yml
  
 ---
 security_group: ssh
 ``` 
 
 ```
-group_vars/echelon/data/app_data/prod_db.yml
+group_vars/echelon/data/app/prod_db.yml
  
 ---
 db_user: prod_user
 ```
 
 ``` 
-group_vars/echelon/data/app_data/dev_db.yml
+group_vars/echelon/data/app/dev_db.yml
 
 ---
 db_user: dev_user
 ```
 
 ``` 
-group_vars/echelon/data/app_data/default.yml
+group_vars/echelon/data/app/default.yml
 
 ---
 db_user: ops
