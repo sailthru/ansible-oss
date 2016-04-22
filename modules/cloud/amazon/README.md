@@ -41,19 +41,19 @@ ok: [localhost] => {
 Modify instance attributes.
 
 ```
-  - ec2_mod_instance_attribute:
+- ec2_mod_instance_attribute:
     profile: "{{ boto_profile }}"
     region: "{{ region }}"
       instance_ids:
         - i-123456
-      source_dest_check: True
+      attributes: {'sourceDestCheck':'true'}
 ```
 ```
 changed: [localhost] => {
     "changed": true, 
         "results": {
             "i-123456": 
-                { "source_dest_check": true }
+                { "sourceDestCheck": true }
         }
     }
 ```
