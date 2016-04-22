@@ -42,11 +42,23 @@ options:
     default: []
     aliases: []
 
-  source_dest_check:
-    description"
-      - Modify source_dest_check attribute
+  attributes:
+    description:
+      - Dictionary of attributes you wish to change:
+        - instanceType - A valid instance type (m1.small)
+        - kernel - Kernel ID (None)
+        - ramdisk - Ramdisk ID (None)
+        - userData - Base64 encoded String (None)
+        - disableApiTermination - Boolean (true)
+        - instanceInitiatedShutdownBehavior - stop|terminate
+        - blockDeviceMapping - List of strings - ie: ['/dev/sda=false']
+        - sourceDestCheck - Boolean (true)
+        - groupSet - Set of Security Groups or IDs
+        - ebsOptimized - Boolean (false)
+        - sriovNetSupport - String - ie: 'simple'
+
     required: false
-    default: null
+    default: {}
     aliases: []
 
 author: "Taras Lipatov tlipatov@sailthru.com"
@@ -64,7 +76,7 @@ EXAMPLES = '''
       - i-654321
     region: us-east-1
     profile: boto_dev_profile
-    source_dest_check: False
+    attributes: {'sourceDestCheck':'true'}
 
 '''
 
@@ -75,15 +87,11 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.ec2 import *
 
 def main():
-    attribute_map = {
-        'source_dest_check':'sourceDestCheck'
-    }
-
     argument_spec = ec2_argument_spec()
 
     argument_spec.update(dict(
         instance_ids = dict(type='list', default=[]),
-        source_dest_check = dict(type='bool')
+        attributes = dict(type='dict', default={})
         )
     )
 
@@ -92,6 +100,7 @@ def main():
     )
 
     instance_ids = module.params.get('instance_ids')
+    attributes = module.params.get('attributes')
 
     try:
         ec2_conn = ec2_connect(module)
@@ -103,23 +112,20 @@ def main():
     changed = False
 
     for id in instance_ids:
-        for param, attr in attribute_map.iteritems():
+        for attr, val in attributes.iteritems():
 
-            val = module.params.get(param)
+            current_attribute = ec2_conn.get_instance_attribute(instance_id=id, attribute=attr)
 
-            if module.params.get(param) != 'None':
-                attribute = ec2_conn.get_instance_attribute(instance_id=id, attribute=attr)
-
-                if val == attribute[attr]:
-                    continue
+            if str(val).lower() == str(current_attribute[attr]).lower():
+                continue
             try:
-                ec2_conn.modify_instance_attribute(instance_id=id,
+                run = ec2_conn.modify_instance_attribute(instance_id=id,
                                           attribute=attr, value=val)
                 changed = True
 
                 results = {
                     id : {
-                        param : val,
+                        attr : val,
                     }
                 }
 
