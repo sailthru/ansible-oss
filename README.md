@@ -4,6 +4,7 @@ Collection of Ansible tools developed to manage the Sailthru stacks
 # Modules
 ##### Cloud AWS
 * cloud/amazon/ec2_instance_status_checks.py
+* cloud/amazon/ec2_mod_instance_attribute.py
 
 # Plugins
 ##### with loop plugins 
