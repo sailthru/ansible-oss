@@ -8,4 +8,4 @@ Collection of Ansible tools developed to manage the Sailthru stacks
 
 # Plugins
 ##### with loop plugins 
-* plugins/lookup_plugins/loops/mergedict.py
+* plugins/lookup_plugins/loops/merge.py
