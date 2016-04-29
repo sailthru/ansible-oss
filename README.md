@@ -9,3 +9,4 @@ Collection of Ansible tools developed to manage the Sailthru stacks
 # Plugins
 ##### with loop plugins 
 * plugins/lookup_plugins/loops/merge.py
+* plugins/lookup_plugins/cloud/amazon/ec2_vpc_route_table_helper.py
