@@ -53,15 +53,27 @@ class LookupModule(LookupBase):
         self.filter = []
         self.profile = None
 
-    def lookup_instance(self, name):
+    def lookup_ig(self, name):
         if name is None:
             return None
 
         try:
+            vpc_conn = boto.vpc.connect_to_region(region_name=self.region, profile_name=self.profile)
+        except Exception as e:
+            raise AnsibleError(e)
+        filters = {'tag:Name': name}
+        gateway = vpc_conn.get_all_internet_gateways(filters=filters)
+
+        if gateway and gateway[0]:
+            return gateway[0].id.encode('utf-8')
+        return name
+
+    def lookup_instance(self, name):
+        try:
             ec2_conn = boto.ec2.connect_to_region(region_name=self.region, profile_name=self.profile)
         except Exception as e:
             raise AnsibleError(e)
-        filters = {'tag:group': name}
+        filters = {self.filter: name}
 
         reservations = ec2_conn.get_all_instances(filters=filters)
         instances = [i for r in reservations for i in r.instances]
@@ -72,7 +84,7 @@ class LookupModule(LookupBase):
                 continue
             return instance.id.encode('utf-8')
 
-        return None
+        return name
 
     def run(self, terms, variables=None, **kwargs):
         self.region = terms[0][0]
@@ -87,6 +99,8 @@ class LookupModule(LookupBase):
             for key in route:
                 if key == 'instance_id':
                     route[key]=self.lookup_instance(route[key])
+                if key == 'gateway_id':
+                    route[key]=self.lookup_ig(route[key])
             routes.append(route)
 
         return [str(routes)]
