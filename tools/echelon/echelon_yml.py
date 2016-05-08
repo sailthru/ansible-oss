@@ -9,8 +9,7 @@ import yaml
 import os.path
 
 class Backend(object):
-    def __init__(self, backend, conf=None):
-        self.backend = backend
+    def __init__(self, conf=None):
         if conf is not None:
             self.conf = conf
         else:
