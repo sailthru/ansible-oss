@@ -1,4 +1,4 @@
-#!/usr/bin/python
+ #!/usr/bin/python
 
 # Yaml loader backen for echelon
 
@@ -9,12 +9,17 @@ import yaml
 import os.path
 
 class Backend(object):
-    def __init__(self, backend, conf):
+    def __init__(self, backend, conf=None):
         self.backend = backend
-        self.conf = conf
+        if conf is not None:
+            self.conf = conf
+        else:
+            self.conf = {}
+            self.conf['data_dir'] = 'data'
 
     def main(self, path):
         data_dir = self.conf['data_dir']
+        
         loader = DataLoader()
 
         full_path="%s/%s" % (data_dir, path)
