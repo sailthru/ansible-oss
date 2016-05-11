@@ -22,23 +22,23 @@ Description: This is a lookup wrapper for the ec2_remote_facts module
 
 This lookup takes the following parameters:
     region: AWS region to connect to - default us-east-1
+
     profile: AWS profile to use - default is None - see AWS profile docs
-    tags: list of tags to filter by
-        - filter by Name tag: tags=['Name:web-server']
-        - filter by multiple tags: tags=['Name:web', 'Env:prod']
+
     return: list of instance properties to return: default is to return all instance properties
         - Return id and state: return=['id','state']
-    filter: dict of filters to apply. Will be appended to tags param if it is provided: default None
-        - pass extra filters: filter="{'tag:Env':'dev'}"
 
-Example Usage:s
+    filters: dict of filters to apply - default None
+        - pass extra filters: filters={'tag:Env':'dev'}
+
+Examples
     Lookup a instance name by 'Name' tag:
-        {{ lookup('aws_ec2_instance_lookup', tags=['Name:'web-server'], profile=aws_profile) }}
+        {{ lookup('aws_ec2_instance_lookup', filters={'tag:Name':'web-server', 'tag:Env:prod'}, profile=aws_profile) }}
 
-        Returns a list of dictionaries with all instance properties that match the tag:Name 'web-server'
+        Returns a list of dictionaries with all instance properties that match the tag:Name 'web-server' and tag:Env 'prod'
 
     Pass additional lookups: 
-        {{ lookup('aws_ec2_instance_lookup', tags=['Name:'web-server'], profile=aws_profile, return=['id','state','ip_address'] ) }}
+        {{ lookup('aws_ec2_instance_lookup', filters={'tag:Name':'web-server'}, profile=aws_profile, return=['id','state','ip_address'] ) }}
 
         Returns a list of dictionaries with instance ID, STATE, IP_DDRESS that match the tag:Name 'web_servers'
         [ {
@@ -47,23 +47,8 @@ Example Usage:s
             "ip_address": "42.37.230.228",
         } ]
 
-    Pass additional filters:
-        - set_fact:
-          extra_tags: "{'tag:Group':'foo'}"
-
-        {{ lookup('ec2_remote_facts', tags=['Name:'web-server'], profile=aws_profile, filter=extra_tags, return=['id']) }}
-
-        Returns a list of dictionaries with instance ID that match the tag:Name 'web-server' and extra tags
-        [ {"id": "i-123456""}]
-
-    Only use filters:
-        {{ lookup('ec2_remote_facts', filter=extra_tags, return=['id']) }}
-
-        Returns a list of dictionaries with instance ID that match the extra tagss
-        [ {"id": "i-123456"" } ]
-
     Get the string value of a property:
-        {{ lookup('ec2_remote_facts', tags=['Name:'web-server'], profile=aws_profile)['id'] }}
+        {{ lookup('ec2_remote_facts', filters={'tag:Name':'web-server'}, profile=aws_profile)['id'] }}
 
         Returns a string value that can be passed as a property to modules
         "i-123456"
@@ -75,7 +60,7 @@ Example Usage:s
 
     - set_fact:
         running_state: "{'instance-state-name':'running'}"
-        running_instances: {{ lookup('ec2_remote_facts', filter=running_state, return=['id'] ) }}
+        running_instances: {{ lookup('ec2_remote_facts', filters=running_state, return=['id'] ) }}
       register: running_instances
 
     - ec2
@@ -105,28 +90,13 @@ except ImportError:
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
         
-        extra_filter = kwargs.get('filter', {})
+        filters = kwargs.get('filters', None)
         profile = kwargs.get('profile', None)
         return_facts = kwargs.get('return', None)
         region = kwargs.get('region', 'us-east-1')
-        tags = kwargs.get('tags', [])
-
-        if type(extra_filter) is not dict:
-            extra_filter = ast.literal_eval(extra_filter)
 
         if type(return_facts) is str:
             return_facts = return_facts.split(',')
-
-        if type(tags) is str:
-            tags = tags.split(',')
-
-        filters={}
-
-        for tag in tags:
-            t = tag.split(':')
-            filters['tag:%s' % t[0] ] = t[1]
-
-        filters.update(extra_filter)
 
         conn = boto.ec2.connect_to_region(region_name=region, profile_name=profile)
         instances = conn.get_only_instances(filters=filters)
