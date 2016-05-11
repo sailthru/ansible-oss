@@ -23,52 +23,59 @@ Description: This is a lookup wrapper for the ec2_remote_facts module
 This lookup takes the following parameters:
     region: AWS region to connect to - default us-east-1
     profile: AWS profile to use - default is None - see AWS profile docs
-    tag_[TAG]: Tag or list of tags to filter by
-        - filter by Name tag: tag_Name='server1'
-        - filter by multiple tags: tag_Role=['web', 'db'], tag_Env='prod'
+    tags: list of tags to filter by
+        - filter by Name tag: tags=['Name:web-server']
+        - filter by multiple tags: tags=['Name:web', 'Env:prod']
     return: list of instance properties to return: default is to return all instance properties
         - Return id and state: return=['id','state']
-    filter: dict of filters to apply. Will be appended to tag param if it is provided: default None
-        - pass extra filters: filter="{'tag:environment':'dev'}"
+    filter: dict of filters to apply. Will be appended to tags param if it is provided: default None
+        - pass extra filters: filter="{'tag:Env':'dev'}"
 
-Example Usage:
-    Lookup a instance name by 'Name' tag
-    {{ lookup('aws_ec2_instance_lookup', tag_Name='server1', profile='dev') }}
+Example Usage:s
+    Lookup a instance name by 'Name' tag:
+        {{ lookup('aws_ec2_instance_lookup', tags=['Name:'web-server'], profile=aws_profile) }}
 
-    Returns a list of dictionaries with all instance properties that match the tag:Name 'server1'
+        Returns a list of dictionaries with all instance properties that match the tag:Name 'web-server'
 
-    Pass additional lookups: {{ lookup('aws_ec2_instance_lookup', tag_Role='web_servers', profile=aws_profile, return=['id','state','ip_address'] ) }}
+    Pass additional lookups: 
+        {{ lookup('aws_ec2_instance_lookup', tags=['Name:'web-server'], profile=aws_profile, return=['id','state','ip_address'] ) }}
 
-    Returns a list of dictionaries with instance ID, STATE, IP_DDRESS that match the tag:Role 'web_servers'
-    [ {
-        "id": "i-86002e03",
-        "state": "running",
-        "ip_address": "52.87.220.238",
-    } ]
+        Returns a list of dictionaries with instance ID, STATE, IP_DDRESS that match the tag:Name 'web_servers'
+        [ {
+            "id": "i-123456"",
+            "state": "running",
+            "ip_address": "42.37.230.228",
+        } ]
 
-    Pass additional filters
-    - set_fact:
-      extra_tags: "{'tag:Group':'foo'}"
+    Pass additional filters:
+        - set_fact:
+          extra_tags: "{'tag:Group':'foo'}"
 
-    {{ lookup('aws_ec2_instance_id_from_name', tag_Name='server1', profile=aws_profile, filter=extra_tags, return='id') }}
+        {{ lookup('ec2_remote_facts', tags=['Name:'web-server'], profile=aws_profile, filter=extra_tags, return=['id']) }}
 
-    Returns a list of dictionaries with instance ID that match the tag:Name 'server1' and extra tags
-    [ {"id": "i-86002e03"}]
+        Returns a list of dictionaries with instance ID that match the tag:Name 'web-server' and extra tags
+        [ {"id": "i-123456""}]
 
     Only use filters:
-    {{ lookup('aws_ec2_instance_id_from_name', filter=extra_tags, return='id') }}
+        {{ lookup('ec2_remote_facts', filter=extra_tags, return=['id']) }}
 
-    Returns a list of dictionaries with instance ID that match the extra tagss
-    [ {"id": "i-86002e03" } ]
+        Returns a list of dictionaries with instance ID that match the extra tagss
+        [ {"id": "i-123456"" } ]
+
+    Get the string value of a property:
+        {{ lookup('ec2_remote_facts', tags=['Name:'web-server'], profile=aws_profile)['id'] }}
+
+        Returns a string value that can be passed as a property to modules
+        "i-123456"
 
     No filters will return ALL properties for all instances
-    {{ lookup('aws_ec2_instance_id_from_name') }}
+        {{ lookup('ec2_remote_facts') }}
 
     An approach to iterating through results
 
     - set_fact:
         running_state: "{'instance-state-name':'running'}"
-        running_instances: {{ lookup('aws_ec2_instance_id_from_name', filter=running_state, return=['id'] ) }}
+        running_instances: {{ lookup('ec2_remote_facts', filter=running_state, return=['id'] ) }}
       register: running_instances
 
     - ec2
