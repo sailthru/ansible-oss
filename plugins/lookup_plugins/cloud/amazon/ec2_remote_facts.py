@@ -109,7 +109,7 @@ class LookupModule(LookupBase):
         profile = kwargs.get('profile', None)
         return_facts = kwargs.get('return', None)
         region = kwargs.get('region', 'us-east-1')
-        tags = kwargs.get('tags', '')
+        tags = kwargs.get('tags', [])
 
         if type(extra_filter) is not dict:
             extra_filter = ast.literal_eval(extra_filter)
