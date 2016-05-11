@@ -137,7 +137,7 @@ class Echelon(object):
     def backend_loader(self,backend=None, conf=None):
         backend_path=os.path.dirname(os.path.realpath(__file__))
         b = imp.load_source('echelon_%s' % backend, '%s/echelon_%s.py' % (backend_path, backend))
-        e = b.Backend(backend, conf)
+        e = b.Backend(conf)
         return e
 
     def run(self, data_dir='data', conf_file='echelon.yml'):
