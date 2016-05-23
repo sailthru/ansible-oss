@@ -60,7 +60,6 @@ EXAMPLES = '''
 '''
 try:
     import boto3
-    import botocore.exceptions.ClientError
     HAS_BOTO3 = True
 except ImportError:
     HAS_BOTO3 = False
