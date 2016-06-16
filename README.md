@@ -16,6 +16,9 @@ We have a convenient script to load the modules, lookups and tools from our ansi
 * cloud/amazon/ec2_mod_instance_attribute.py
 * cloud/amazon/ec2_ecr_authorization_facts.py
 
+### Cluster
+* modules/clustering/zookeeper_exhibitor_facts.py
+
 ## Plugins
 ### with loop plugins
 
