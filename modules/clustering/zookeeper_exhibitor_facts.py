@@ -51,7 +51,6 @@ except ImportError:
 else:
     requests_found = True
 
-
 def main():
     results = {}
     results['instances'] = []
@@ -73,14 +72,20 @@ def main():
     }
 
     url = '%s/%s' % ( exhibitor_url, api_cluster_v1['status'] )
-    r = requests.get( url, headers={'Accept': 'application/json'}, timeout=20.0 )
+    try:
+        r = requests.get( url, headers={'Accept': 'application/json'}, timeout=20.0 )
+    except requests.exceptions.ConnectionError:
+        module.fail_json(msg="Connot connect to: %s" % (url) )
 
     if r.status_code == 200:
         results['status'] = r.json()
 
         for host in r.json():
             url = '%s/%s/%s' % ( exhibitor_url, api_cluster_v1['remoteGetStatus'], host['hostname'] )
-            r = requests.get( url, headers={'Accept': 'application/json'}, timeout=20.0 )
+            try:
+                r = requests.get( url, headers={'Accept': 'application/json'}, timeout=20.0 )
+            except requests.exceptions.ConnectionError:
+                module.fail_json(msg="Connot connect to: %s" % (url) )
 
             instance = {
                 host['hostname'] : r.json()
