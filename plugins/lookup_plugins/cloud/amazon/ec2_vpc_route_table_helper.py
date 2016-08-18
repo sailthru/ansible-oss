@@ -99,8 +99,8 @@ class LookupModule(LookupBase):
             for key in route:
                 if key == 'instance_id':
                     route[key]=self.lookup_instance(route[key])
-                if key == 'gateway_id':
-                    route[key]=self.lookup_ig(route[key])
+                # if key == 'gateway_id':
+                #     route[key]=self.lookup_ig(route[key])
             routes.append(route)
 
         return [str(routes)]
