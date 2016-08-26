@@ -117,4 +117,4 @@ class LookupModule(LookupBase):
                     d[f]=return_fact
                 results.append(d.copy())
 
-        return(results)
+        return([results])
