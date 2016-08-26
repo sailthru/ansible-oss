@@ -75,7 +75,8 @@ class LookupModule(LookupBase):
             raise AnsibleError(e)
         filters = {self.filter: name}
 
-        reservations = ec2_conn.get_all_instances(filters=filters)
+        reservations = ec2_conn.get_all_instances(filters={'tag:name': 'nat-main'})
+        
         instances = [i for r in reservations for i in r.instances]
 
         for instance in instances:
@@ -91,7 +92,8 @@ class LookupModule(LookupBase):
         self.routes = terms[0][1]
         self.filter = terms[0][2]
 
-        if len(terms[0]) == 3:
+        if len(terms[0]) == 4:
+
             self.profile = terms[0][3]
 
         routes = []
