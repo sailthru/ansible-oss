@@ -67,6 +67,7 @@ import ast
 try:
     import boto
     import boto.vpc
+    from boto.exception import BotoServerError
 except ImportError:
     raise AnsibleError("aws_ec2_subnet_lookup lookup cannot be run without boto installed")
 
